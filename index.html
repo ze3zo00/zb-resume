@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+    INTERACTIVE RESUME - Version 3.0.0
+    Developed by: Zezo Beshir | DotOneLLC
+    Repository: https://github.com/ze3zo00/interactive-resume
+═══════════════════════════════════════════════════════════════════════════════
+
+    FILE STRUCTURE:
+    ├── index.html    - Main HTML structure (this file)
+    ├── styles.css    - Custom CSS and theme definitions
+    ├── main.js       - JavaScript functionality
+    └── README.md     - Documentation
+
+    FEATURES:
+    • 4 Dynamic Color Themes (Blue, Green, Gold, Coral)
+    • Light/Dark Mode Toggle
+    • Glassmorphism UI Design
+    • Fully Responsive Layout
+    • Tab Navigation (Education/Certifications)
+    • Timeline-Based Work Experience
+    • Smooth Scroll Animations
+
+    CUSTOMIZATION GUIDE:
+    Look for "📝 REPLACE:" or "📝 CUSTOMIZE:" comments throughout this file
+    to find sections that need your personal information.
+
+═══════════════════════════════════════════════════════════════════════════════
+-->
+
+<head>
+    <!-- ═══════════════════════════════════════════════════════════════════
+         HEAD SECTION - Basic Configuration
+         ═══════════════════════════════════════════════════════════════════ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 📝 CUSTOMIZE: Update meta description for SEO -->
+    <meta name="description" content="Interactive resume showcasing professional experience, skills, and portfolio">
+    <!-- 📝 CUSTOMIZE: Change the page title -->
+    <title>Interactive Resume</title>
+
+    <!-- Tailwind CSS CDN - Utility-first CSS framework -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Custom CSS - Contains theme system and dynamic styles -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         TAILWIND CONFIGURATION
+         Extends Tailwind with custom colors for the 4 theme options
+         ═══════════════════════════════════════════════════════════════════ -->
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'accent-blue': '#0066FF',
+                        'accent-green': '#00D98B',
+                        'accent-gold': '#FFB800',
+                        'accent-coral': '#FF6B6B',
+                        'glass-white': 'rgba(255, 255, 255, 0.05)',
+                        'glass-border': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                    },
+                    backdropBlur: {
+                        'xs': '2px',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         CUSTOM TAILWIND STYLES
+         Defines glassmorphism effects, animations, and UI components
+         ═══════════════════════════════════════════════════════════════════ -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* Glassmorphism Card - Semi-transparent background with blur effect */
+            .glass-card {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            /* Hover state for interactive glass cards */
+            .glass-card-hover {
+                transition: all 0.3s ease;
+            }
+
+            .glass-card-hover:hover {
+                background: rgba(255, 255, 255, 0.08);
+                border-color: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+            }
+
+            /* Timeline styles moved to styles.css for dynamic theming */
+
+            /* Scroll progress bar styles moved to styles.css for dynamic theming */
+
+            /* Fade-in animation for smooth element appearance */
+            .animate-fade-in {
+                animation: fadeIn 0.6s ease-out;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Tab system - Hide inactive tabs */
+            .tab-content {
+                display: none;
+            }
+
+            /* Show active tab with animation */
+            .tab-content.active {
+                display: block;
+                animation: fadeIn 0.4s ease-out;
+            }
+
+            /* Skill bar container (if needed in future) */
+            .skill-bar {
+                height: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+                overflow: hidden;
+            }
+
+            /* Skill bar fill styles moved to styles.css for dynamic theming */
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white min-h-screen font-sans antialiased">
+    <!-- ═══════════════════════════════════════════════════════════════════
+         BODY SECTION
+         Theme is controlled by data attributes (data-theme and data-mode)
+         These are managed by main.js
+         ═══════════════════════════════════════════════════════════════════ -->
+
+    <!-- Top of page anchor for profile navigation -->
+    <div id="top"></div>
+
+    <!-- Scroll Progress Bar - Shows reading progress at the top of the page -->
+    <div id="scrollProgress" class="scroll-progress-bar" style="width: 0%"></div>
+
+    <!-- Skip to Content Link - Accessibility feature for keyboard navigation -->
+    <a href="#main-content"
+        class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-accent-blue focus:text-white focus:rounded">
+        Skip to main content
+    </a>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         NAVIGATION - Fixed Top-Right Menu
+         Provides quick links to Profile, Experience, and Clone sections
+         ═══════════════════════════════════════════════════════════════════ -->
+    <!-- Navigation -->
+    <nav class="fixed top-0 right-0 z-50 p-6" role="navigation" aria-label="Main navigation">
+        <div class="glass-card rounded-2xl px-4 py-3 flex gap-4">
+            <a href="#top"
+                class="flex flex-col items-center gap-1 text-white/60 hover:text-accent-blue transition-colors duration-300"
+                aria-label="Go to profile section">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span class="text-xs font-medium">Profile</span>
+            </a>
+            <a href="#experience"
+                class="flex flex-col items-center gap-1 text-white/60 hover:text-accent-blue transition-colors duration-300"
+                aria-label="Go to experience section">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span class="text-xs font-medium">Experience</span>
+            </a>
+            <a href="#clone"
+                class="flex flex-col items-center gap-1 text-white/60 hover:text-accent-blue transition-colors duration-300"
+                aria-label="Go to clone template section">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                </svg>
+                <span class="text-xs font-medium">Clone</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MAIN CONTENT WRAPPER
+         ═══════════════════════════════════════════════════════════════════ -->
+    <main id="main-content" class="container mx-auto px-4 py-12 max-w-7xl">
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             PROFILE SECTION
+             Contains: Profile Photo, Name, Title, Bio, Contact Links, Tabs
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section id="profile" class="min-h-screen flex flex-col justify-center items-center text-center mb-24"
+            role="region" aria-label="Profile">
+
+            <!-- ─────────────────────────────────────────────────────────────
+                 PROFILE PHOTO
+                 📝 CUSTOMIZE: Replace ProfilePic.png with your photo
+
+                 RECOMMENDED SIZE: 512px × 512px (square) for best quality
+                 • Mobile display: 192px circle
+                 • Tablet display: 224px circle
+                 • Desktop display: 256px circle
+
+                 TIPS:
+                 • Use a square photo (1:1 ratio)
+                 • Center your face in the frame
+                 • Use high resolution for retina displays
+                 • Supported formats: JPG, PNG, WebP
+                 ───────────────────────────────────────────────────────────── -->
+            <div class="mb-8 animate-fade-in">
+                <div
+                    class="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden border-4 border-accent-blue shadow-lg shadow-accent-blue/50 mx-auto relative">
+                    <!-- 📝 REPLACE: Change src="ProfilePic.png" to your image path -->
+                    <img src="ProfilePic.png" alt="Profile photo" class="w-full h-full object-cover object-center"
+                        loading="eager">
+                </div>
+            </div>
+
+            <!-- ─────────────────────────────────────────────────────────────
+                 NAME & TITLE
+                 📝 CUSTOMIZE: Replace with your name and professional title
+                 ───────────────────────────────────────────────────────────── -->
+            <div class="animate-fade-in" style="animation-delay: 0.1s">
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold mb-4 tracking-tight">
+                    Zoelfakar (Zezo) Beshir
+                </h1>
+                <h2 class="text-2xl md:text-3xl lg:text-4xl text-accent-blue font-semibold mb-6 tracking-tight">
+                    Senior Site Reliability Engineer
+                </h2>
+            </div>
+
+            <!-- ─────────────────────────────────────────────────────────────
+                 BIO / TAGLINE
+                 📝 CUSTOMIZE: Write a brief 2-3 sentence introduction
+                 ───────────────────────────────────────────────────────────── -->
+            <div class="animate-fade-in max-w-2xl" style="animation-delay: 0.2s">
+                <p class="text-lg md:text-xl text-white/80 leading-relaxed mb-8">
+                    Site Reliability Engineer with 9+ years of expertise in multi-cloud architecture, Zero Trust
+                    security, and large-scale infrastructure automation.
+                    Proven track record of leading mission-critical systems for Google and federal agencies, managing
+                    2,000+ production workloads while achieving ~ 99.5% SLO compliance.
+                    Passionate about leveraging AI innovation, Infrastructure as Code, and DevOps best practices to
+                    build resilient, secure cloud platforms.
+                </p>
+            </div>
+
+            <!-- ─────────────────────────────────────────────────────────────
+                 CONTACT LINKS
+                 📝 CUSTOMIZE: Update all URLs and the resume download link
+                 ───────────────────────────────────────────────────────────── -->
+            <div class="animate-fade-in flex flex-wrap gap-4 justify-center mb-12" style="animation-delay: 0.3s">
+                <a href="mailto:zoelfakarbeshir@gmail.com"
+                    class="glass-card glass-card-hover px-6 py-3 rounded-full flex items-center gap-2 text-white/90 hover:text-accent-blue"
+                    aria-label="Send email">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Email</span>
+                </a>
+                <a href="https://www.linkedin.com/in/zezo-beshir-2bb68053/"
+                    class="glass-card glass-card-hover px-6 py-3 rounded-full flex items-center gap-2 text-white/90 hover:text-accent-blue"
+                    aria-label="Visit LinkedIn profile" target="_blank" rel="noopener noreferrer">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://github.com/ze3zo00"
+                    class="glass-card glass-card-hover px-6 py-3 rounded-full flex items-center gap-2 text-white/90 hover:text-accent-blue"
+                    aria-label="Visit GitHub profile" target="_blank" rel="noopener noreferrer">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    <span>GitHub</span>
+                </a>
+                <a href="ZBeshir_Resume.pdf"
+                    class="bg-accent-blue hover:bg-accent-blue/80 px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent-blue/50"
+                    aria-label="Download resume PDF" download>
+                    Download Resume
+                </a>
+
+                <a href="ZBeshir_CoverLetter.pdf"
+                    class="bg-accent-blue hover:bg-accent-blue/80 px-8 py-3 rounded-full font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent-blue/50"
+                    aria-label="Download cover letter PDF" download>
+                    Download Cover Letter
+                </a>
+            </div>
+
+            <!-- ─────────────────────────────────────────────────────────────
+                 TABS SYSTEM - Education & Certifications
+                 HOW IT WORKS:
+                 • Buttons toggle between Education and Certifications panels
+                 • JavaScript (main.js) handles the tab switching
+                 • Active tab has 'bg-accent-blue' class
+                 • Active panel has 'active' class
+                 ───────────────────────────────────────────────────────────── -->
+            <div class="animate-fade-in w-full max-w-4xl" style="animation-delay: 0.4s">
+                <div class="glass-card rounded-2xl p-2" role="tablist" aria-label="Profile sections">
+                    <!-- Tab Buttons -->
+                    <div class="flex gap-2 mb-6">
+                        <button
+                            class="tab-button flex-1 px-6 py-3 rounded-lg bg-accent-blue text-white font-semibold transition-all duration-300"
+                            data-tab="education" role="tab" aria-selected="true" aria-controls="education-panel">
+                            Education
+                        </button>
+                        <button
+                            class="tab-button flex-1 px-6 py-3 rounded-lg text-white/60 hover:text-white hover:bg-white/5 font-semibold transition-all duration-300"
+                            data-tab="certifications" role="tab" aria-selected="false"
+                            aria-controls="certifications-panel">
+                            Certifications
+                        </button>
+                    </div>
+
+                    <!-- ═════════════════════════════════════════════════════
+                         EDUCATION TAB PANEL
+                         ═════════════════════════════════════════════════════ -->
+                    <div id="education-panel" class="tab-content active p-6" role="tabpanel"
+                        aria-labelledby="education-tab">
+                        <div class="space-y-6">
+                            <div class="glass-card glass-card-hover p-6 rounded-xl">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-bold">Bachelor of Science, Information Technology</h3>
+                                    <span class="text-accent-blue font-semibold">Graduated</span>
+                                </div>
+                                <p class="text-white/80 mb-2">George Mason University | Fairfax, VA</p>
+                                <p class="text-white/60">GPA: 3.80</p>
+                            </div>
+                            <div class="glass-card glass-card-hover p-6 rounded-xl">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-bold">Associate of Science, Information Technology</h3>
+                                    <span class="text-accent-blue font-semibold">Graduated</span>
+                                </div>
+                                <p class="text-white/80 mb-2">Northern Virginia Community College | Annandale, VA</p>
+                                <p class="text-white/60">GPA: 3.75</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ═════════════════════════════════════════════════════
+                         CERTIFICATIONS TAB PANEL
+                         ═════════════════════════════════════════════════════ -->
+                    <div id="certifications-panel" class="tab-content p-6" role="tabpanel"
+                        aria-labelledby="certifications-tab">
+                        <div class="space-y-4">
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-white/90 mb-3">Cloud Platforms</h3>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">AWS
+                                        Cloud Practitioner</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">AWS
+                                        Solutions Architect Associate</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">AWS
+                                        Advanced Networking</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">AWS
+                                        Security Specialty</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-green/20 text-accent-green rounded-lg text-sm font-semibold">GCP
+                                        Professional Workspace Administrator</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">Azure
+                                        Fundamentals (AZ-900)</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">Azure
+                                        Administrator (AZ-104)</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-gold/20 text-accent-gold rounded-lg text-sm font-semibold">Azure
+                                        Solutions Architect (AZ-305) - In Progress</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-white/90 mb-3">AI & Machine Learning</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-coral/20 text-accent-coral rounded-lg text-sm font-semibold">Azure
+                                        AI Fundamentals (AI-900)</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-coral/20 text-accent-coral rounded-lg text-sm font-semibold">Azure
+                                        AI Engineer Associate (AI-102)</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-white/90 mb-3">Security & Networking</h3>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-green/20 text-accent-green rounded-lg text-sm font-semibold">CompTIA
+                                        A+</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-green/20 text-accent-green rounded-lg text-sm font-semibold">CompTIA
+                                        Network+</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-green/20 text-accent-green rounded-lg text-sm font-semibold">CompTIA
+                                        Security+</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">Cisco
+                                        CCENT</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">Cisco
+                                        CCNA R&S</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h3 class="text-lg font-bold text-white/90 mb-3">DevOps & Orchestration</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span
+                                        class="px-4 py-2 bg-accent-gold/20 text-accent-gold rounded-lg text-sm font-semibold">HashiCorp
+                                        Terraform Associate</span>
+                                    <span
+                                        class="px-4 py-2 bg-accent-blue/20 text-accent-blue rounded-lg text-sm font-semibold">CKA
+                                        (Certified Kubernetes Administrator)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             WORK EXPERIENCE SECTION - Timeline Layout
+             HOW THE TIMELINE WORKS:
+             • Vertical line down the center (visible on desktop only)
+             • Jobs alternate left/right using CSS Grid
+             • Timeline dots positioned at top of cards using negative positioning
+             • Dot sizes: timeline-dot-large (24px) for most recent,
+                          timeline-dot (16px) for others
+             • Colors automatically match the active theme
+             📝 CUSTOMIZE: Add/remove job entries, update all details
+             ═══════════════════════════════════════════════════════════════════ -->
+        <section id="experience" class="min-h-screen py-24" role="region" aria-label="Work Experience">
+            <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Work Experience</h2>
+
+            <div class="relative max-w-5xl mx-auto">
+                <div class="timeline-line hidden md:block" aria-hidden="true"></div>
+
+                <div class="space-y-12">
+
+                    <!-- JOB #1 - Senior Azure SRE (Current) -->
+                    <article class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+                        <div class="hidden md:block"></div>
+                        <div class="glass-card p-8 rounded-2xl">
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-3 hidden md:block">
+                                <div class="timeline-dot timeline-dot-large"></div>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-1">Senior Azure Site Reliability Engineer</h3>
+                                    <p class="text-accent-blue font-semibold">Federal Contractor | Department of
+                                        Treasury</p>
+                                </div>
+                                <time class="text-accent-blue font-semibold whitespace-nowrap ml-4">Dec 2024 -
+                                    Present</time>
+                            </div>
+                            <p class="timeline-description text-white/80 leading-relaxed mb-4">
+                                Lead Azure infrastructure design and implementation managing 150+ resources across 8
+                                production environments.
+                                Architect Zero Trust security with Zscaler ZTNA for 200+ AVD users. Pioneer AI
+                                integration with Azure OpenAI and
+                                champion Microsoft Copilot adoption achieving 85% adoption rate. Reduced cloud spend by
+                                $15K monthly through optimization.
+                            </p>
+                            <div class="timeline-skills flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Azure</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Terraform</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">AVD</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Zscaler</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Entra
+                                    ID</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">GitLab
+                                    CI/CD</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Azure
+                                    OpenAI</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- JOB #2 - Senior Platform Engineer -->
+                    <article class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+                        <div class="glass-card p-8 rounded-2xl md:text-right">
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block">
+                                <div class="timeline-dot"></div>
+                            </div>
+                            <div class="flex md:flex-row-reverse justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-1">Senior Platform Engineer</h3>
+                                    <p class="text-accent-blue font-semibold">Federal Contractor | GSA Presidential
+                                        Transition</p>
+                                </div>
+                                <time class="text-accent-blue font-semibold whitespace-nowrap mr-4 md:mr-0 md:ml-4">Oct
+                                    2023 - Dec 2024</time>
+                            </div>
+                            <p class="timeline-description text-white/80 leading-relaxed mb-4">
+                                Led multi-cloud infrastructure design for 2024 election cycle. Architected air-gapped
+                                network following TIC 3.0 Zero Trust
+                                Architecture, earning GSA Certificate of Appreciation. Achieved ATO for 12 systems at
+                                FedRAMP Moderate. Deployed AVD with
+                                FSLogix and pioneered IaC framework adopted across 3 GSA projects.
+                            </p>
+                            <div class="timeline-skills flex flex-wrap gap-2 md:justify-end">
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">AWS</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">Azure</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">Terraform</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">AVD</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">Zscaler</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-green/20 text-accent-green rounded-full text-sm font-semibold">NIST
+                                    800-53</span>
+                            </div>
+                        </div>
+                        <div class="hidden md:block"></div>
+                    </article>
+
+                    <!-- JOB #3 - Google SRE -->
+                    <article class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+                        <div class="hidden md:block"></div>
+                        <div class="glass-card p-8 rounded-2xl">
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block">
+                                <div class="timeline-dot"></div>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-1">Site Reliability Engineer</h3>
+                                    <p class="text-accent-blue font-semibold">Google</p>
+                                </div>
+                                <time class="text-accent-blue font-semibold whitespace-nowrap ml-4">Feb 2021 - Oct
+                                    2023</time>
+                            </div>
+                            <p class="timeline-description text-white/80 leading-relaxed mb-4">
+                                Designed custom Borg auto-scaling algorithm using ML models for 2,000+ production
+                                workloads, reducing costs by $1.2M annually.
+                                Led incident response team during P0/P1 outages affecting 500K+ customers, improving
+                                MTTR from 45 to 18 minutes.
+                                Developed automation frameworks eliminating 15 hours/week of toil per engineer.
+                            </p>
+                            <div class="timeline-skills flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">GCP</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">Borg</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">Python</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">Go</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">Kubernetes</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-gold/20 text-accent-gold rounded-full text-sm font-semibold">Machine
+                                    Learning</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- JOB #4 - VA SRE -->
+                    <article class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+                        <div class="glass-card p-8 rounded-2xl md:text-right">
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block">
+                                <div class="timeline-dot"></div>
+                            </div>
+                            <div class="flex md:flex-row-reverse justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-1">Site Reliability Engineer</h3>
+                                    <p class="text-accent-blue font-semibold">Federal Contractor | Department of
+                                        Veterans Affairs</p>
+                                </div>
+                                <time class="text-accent-blue font-semibold whitespace-nowrap mr-4 md:mr-0 md:ml-4">Jan
+                                    2019 - Feb 2021</time>
+                            </div>
+                            <p class="timeline-description text-white/80 leading-relaxed mb-4">
+                                Redesigned SLA/SLO framework for VA cloud infrastructure serving 9M+ veterans, reducing
+                                unplanned downtime by 55% year-over-year.
+                                Conducted security assessments across 25+ AWS accounts, remediating 200+ vulnerabilities
+                                and saving $450K annually through
+                                cost optimization. Delivered training to 45 engineers across 6 VA teams.
+                            </p>
+                            <div class="timeline-skills flex flex-wrap gap-2 md:justify-end">
+                                <span
+                                    class="px-3 py-1 bg-accent-coral/20 text-accent-coral rounded-full text-sm font-semibold">AWS</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-coral/20 text-accent-coral rounded-full text-sm font-semibold">CloudWatch</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-coral/20 text-accent-coral rounded-full text-sm font-semibold">CloudFormation</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-coral/20 text-accent-coral rounded-full text-sm font-semibold">Lambda</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-coral/20 text-accent-coral rounded-full text-sm font-semibold">Security</span>
+                            </div>
+                        </div>
+                        <div class="hidden md:block"></div>
+                    </article>
+
+                    <!-- JOB #5 - AWS Cloud Support Engineer -->
+                    <article class="relative md:grid md:grid-cols-2 md:gap-8 items-center">
+                        <div class="hidden md:block"></div>
+                        <div class="glass-card p-8 rounded-2xl">
+                            <div class="absolute left-1/2 -translate-x-1/2 -top-2 hidden md:block">
+                                <div class="timeline-dot"></div>
+                            </div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h3 class="text-2xl font-bold mb-1">Cloud Support Engineer</h3>
+                                    <p class="text-accent-blue font-semibold">Amazon Web Services (AWS)</p>
+                                </div>
+                                <time class="text-accent-blue font-semibold whitespace-nowrap ml-4">Nov 2015 - Jan
+                                    2019</time>
+                            </div>
+                            <p class="timeline-description text-white/80 leading-relaxed mb-4">
+                                Led cloud migration of 30+ enterprise customers to AWS managing $2M+ in infrastructure
+                                transitions with zero security incidents
+                                and 100% compliance. Orchestrated infrastructure automation improving uptime from 99.5%
+                                to 99.95% and reducing deployment time by 80%.
+                                Served as SME for AWS networking and monitoring, resolving 200+ complex escalations.
+                            </p>
+                            <div class="timeline-skills flex flex-wrap gap-2">
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">AWS</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">VPC</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Transit
+                                    Gateway</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Direct
+                                    Connect</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">CloudFormation</span>
+                                <span
+                                    class="px-3 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm font-semibold">Lambda</span>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         GITHUB CLONE SECTION
+         Promotes the template repository
+         NOTE: This section is automatically highlighted when user
+               scrolls to bottom (see main.js navigation logic)
+         ═══════════════════════════════════════════════════════════════════ -->
+    <section id="clone" class="py-16 border-t border-white/10">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <div class="glass-card p-8 rounded-2xl text-center">
+                <div class="flex items-center justify-center gap-2 mb-3">
+                    <svg class="w-5 h-5 text-accent-blue" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    <h2 class="text-base md:text-lg font-semibold">Like This Resume Template?</h2>
+                </div>
+                <p class="text-white/80 mb-6">Clone this project and make it your own! It's free and open source.</p>
+                <!-- Clone Command -->
+                <div class="glass-card bg-black/30 p-4 rounded-lg mb-6 font-mono text-sm text-left overflow-x-auto">
+                    <code class="text-accent-blue">git clone https://github.com/ze3zo00/interactive-resume.git</code>
+                </div>
+                <!-- GitHub Link -->
+                <a href="https://github.com/ze3zo00/interactive-resume" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 glass-card glass-card-hover px-6 py-3 rounded-full text-white/90 hover:text-accent-blue transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    <span>View on GitHub</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FOOTER - Call to Action & Credits
+         📝 CUSTOMIZE: Update email link and company information
+         ═══════════════════════════════════════════════════════════════════ -->
+    <footer class="border-t border-white/10 py-12" role="contentinfo">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <!-- Call to Action -->
+            <div class="text-center mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Let's Work Together</h2>
+                <p class="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
+                    I'm always open to discussing new projects, creative ideas, or opportunities to be part of your
+                    vision.
+                </p>
+                <a href="mailto:support@dotonellc.com"
+                    class="inline-block bg-accent-blue hover:bg-accent-blue/80 px-10 py-4 rounded-full font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent-blue/50">
+                    Get In Touch
+                </a>
+            </div>
+            <!-- Credits -->
+            <div class="text-center py-4 text-white/40 text-xs">
+                <p> Version 3.0.0 </p>
+                <p> Developed by Zezo Beshir</p>
+            </div>
+            <!-- Copyright -->
+            <div class="text-center text-white/60 text-sm">
+                <!-- 📝 CUSTOMIZE: Update copyright year and company info -->
+                <p>&copy; 2025 DotOneLLC. All rights reserved. <a href="https://www.dotonellc.com"
+                        class="footer-link">www.dotonellc.com</a> | <a href="mailto:support@dotonellc.com"
+                        class="footer-link">support@dotonellc.com</a> </p>
+            </div>
+
+        </div>
+    </footer>
+
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         JAVASCRIPT
+         main.js handles:
+         • Theme switching (blue/green/gold/coral)
+         • Light/Dark mode toggle
+         • Tab navigation (Education/Certifications)
+         • Scroll animations and progress bar
+         • Navigation link highlighting
+         ═══════════════════════════════════════════════════════════════════ -->
+    <script src="main.js"></script>
+
+</body>
+
+</html>
+<!--
+═══════════════════════════════════════════════════════════════════════════════
+    END OF FILE
+
+    QUICK CUSTOMIZATION CHECKLIST:
+    ☐ Replace ProfilePic.png with your photo
+    ☐ Update name and title (lines 161-167)
+    ☐ Write your bio/tagline (line 173)
+    ☐ Add your contact links (lines 183-217)
+    ☐ Update education entries (lines 242-261)
+    ☐ Add your certifications (lines 270-372)
+    ☐ Replace work experience with your jobs (lines 393-481)
+    ☐ Change footer email and company info (lines 526-537)
+    ☐ Update meta description for SEO (line 126)
+
+    THEME CUSTOMIZATION:
+    • Themes are set via data-theme attribute on <body> (managed by main.js)
+    • Available themes: blue, green, gold, coral
+    • Light/Dark mode: data-mode="dark" or data-mode="light"
+    • All theme colors defined in styles.css
+
+    NEED HELP?
+    • Check README.md for detailed instructions
+    • Visit: https://github.com/ze3zo00/interactive-resume
+
+    Made with care by Zezo Beshir | DotOneLLC
+═══════════════════════════════════════════════════════════════════════════════
+-->
