@@ -1,0 +1,932 @@
+/* ===================================
+   Interactive Resume - Custom Styles
+   Version: 1.0
+   ================================== */
+
+/* CSS Custom Properties for Theme */
+:root {
+    /* Accent Colors */
+    --accent-blue: #0066FF;
+    --accent-green: #00D98B;
+    --accent-gold: #FFB800;
+    --accent-coral: #FF6B6B;
+
+    /* Active Accent (can be changed via JS) */
+    --accent-primary: var(--accent-blue);
+    --accent-secondary: var(--accent-green);
+
+    /* Glass Effect Colors */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-bg-hover: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-border-hover: rgba(255, 255, 255, 0.25);
+
+    /* Shadows */
+    --shadow-sm: 0 0 10px rgba(0, 102, 255, 0.3);
+    --shadow-md: 0 0 20px rgba(0, 102, 255, 0.4);
+    --shadow-lg: 0 0 30px rgba(0, 102, 255, 0.5);
+    --shadow-xl: 0 0 40px rgba(0, 102, 255, 0.6);
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 3rem;
+
+    /* Typography */
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --font-size-5xl: 3rem;
+
+    /* Animation Timings */
+    --transition-fast: 0.15s;
+    --transition-base: 0.3s;
+    --transition-slow: 0.5s;
+    --transition-slower: 0.8s;
+}
+
+/* Theme Variations */
+[data-theme="blue"] {
+    --accent-primary: var(--accent-blue);
+    --shadow-sm: 0 0 10px rgba(0, 102, 255, 0.3);
+    --shadow-md: 0 0 20px rgba(0, 102, 255, 0.4);
+    --shadow-lg: 0 0 30px rgba(0, 102, 255, 0.5);
+    --shadow-xl: 0 0 40px rgba(0, 102, 255, 0.6);
+}
+
+[data-theme="green"] {
+    --accent-primary: var(--accent-green);
+    --shadow-sm: 0 0 10px rgba(0, 217, 139, 0.3);
+    --shadow-md: 0 0 20px rgba(0, 217, 139, 0.4);
+    --shadow-lg: 0 0 30px rgba(0, 217, 139, 0.5);
+    --shadow-xl: 0 0 40px rgba(0, 217, 139, 0.6);
+}
+
+[data-theme="gold"] {
+    --accent-primary: var(--accent-gold);
+    --shadow-sm: 0 0 10px rgba(255, 184, 0, 0.3);
+    --shadow-md: 0 0 20px rgba(255, 184, 0, 0.4);
+    --shadow-lg: 0 0 30px rgba(255, 184, 0, 0.5);
+    --shadow-xl: 0 0 40px rgba(255, 184, 0, 0.6);
+}
+
+[data-theme="coral"] {
+    --accent-primary: var(--accent-coral);
+    --shadow-sm: 0 0 10px rgba(255, 107, 107, 0.3);
+    --shadow-md: 0 0 20px rgba(255, 107, 107, 0.4);
+    --shadow-lg: 0 0 30px rgba(255, 107, 107, 0.5);
+    --shadow-xl: 0 0 40px rgba(255, 107, 107, 0.6);
+}
+
+/* Override Tailwind accent colors with dynamic theme variable */
+.text-accent-blue,
+.text-accent-green,
+.text-accent-gold,
+.text-accent-coral {
+    color: var(--accent-primary) !important;
+}
+
+.bg-accent-blue,
+.bg-accent-green,
+.bg-accent-gold,
+.bg-accent-coral {
+    background-color: var(--accent-primary) !important;
+}
+
+.border-accent-blue,
+.border-accent-green,
+.border-accent-gold,
+.border-accent-coral {
+    border-color: var(--accent-primary) !important;
+}
+
+.hover\:text-accent-blue:hover,
+.hover\:text-accent-green:hover,
+.hover\:text-accent-gold:hover,
+.hover\:text-accent-coral:hover {
+    color: var(--accent-primary) !important;
+}
+
+.hover\:bg-accent-blue:hover,
+.hover\:bg-accent-green:hover,
+.hover\:bg-accent-gold:hover,
+.hover\:bg-accent-coral:hover {
+    background-color: var(--accent-primary) !important;
+}
+
+.hover\:bg-accent-blue\/80:hover,
+.hover\:bg-accent-green\/80:hover,
+.hover\:bg-accent-gold\/80:hover,
+.hover\:bg-accent-coral\/80:hover {
+    background-color: var(--accent-primary) !important;
+    opacity: 0.8;
+}
+
+.shadow-accent-blue,
+.shadow-accent-green,
+.shadow-accent-gold,
+.shadow-accent-coral {
+    --tw-shadow-color: var(--accent-primary) !important;
+}
+
+.shadow-accent-blue\/50,
+.shadow-accent-green\/50,
+.shadow-accent-gold\/50,
+.shadow-accent-coral\/50 {
+    --tw-shadow-color: var(--accent-primary) !important;
+}
+
+.hover\:shadow-accent-blue\/50:hover,
+.hover\:shadow-accent-green\/50:hover,
+.hover\:shadow-accent-gold\/50:hover,
+.hover\:shadow-accent-coral\/50:hover {
+    --tw-shadow-color: var(--accent-primary) !important;
+}
+
+/* Transparent background variants for skill badges */
+.bg-accent-blue\/20,
+.bg-accent-green\/20,
+.bg-accent-gold\/20,
+.bg-accent-coral\/20 {
+    background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent) !important;
+}
+
+/* Fallback for browsers that don't support color-mix */
+@supports not (background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent)) {
+    .bg-accent-blue\/20,
+    .bg-accent-green\/20,
+    .bg-accent-gold\/20,
+    .bg-accent-coral\/20 {
+        background-color: var(--accent-primary) !important;
+        opacity: 0.2;
+    }
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode */
+body[data-mode="light"] {
+    background-color: #f5f5f5;
+    color: #1a1a1a;
+}
+
+body[data-mode="light"] .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+body[data-mode="light"] .glass-card-hover:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+body[data-mode="light"] nav .glass-card {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body[data-mode="light"] .scroll-progress-bar {
+    box-shadow: 0 0 10px var(--accent-primary);
+}
+
+body[data-mode="light"] .timeline-line {
+    background: linear-gradient(180deg,
+        transparent,
+        var(--accent-primary) 10%,
+        var(--accent-primary) 90%,
+        transparent
+    );
+}
+
+body[data-mode="light"] .timeline-dot,
+body[data-mode="light"] .timeline-dot-large {
+    border-color: #f5f5f5;
+}
+
+/* Light mode text colors */
+body[data-mode="light"] h1,
+body[data-mode="light"] h2,
+body[data-mode="light"] h3,
+body[data-mode="light"] h4,
+body[data-mode="light"] h5,
+body[data-mode="light"] h6 {
+    color: #1a1a1a;
+}
+
+body[data-mode="light"] p,
+body[data-mode="light"] span,
+body[data-mode="light"] time {
+    color: #1a1a1a;
+}
+
+body[data-mode="light"] a {
+    color: #1a1a1a;
+}
+
+body[data-mode="light"] .text-white\/80 {
+    color: rgba(26, 26, 26, 0.8) !important;
+}
+
+body[data-mode="light"] .text-white\/60 {
+    color: rgba(26, 26, 26, 0.6) !important;
+}
+
+body[data-mode="light"] .text-white\/90 {
+    color: rgba(26, 26, 26, 0.9) !important;
+}
+
+body[data-mode="light"] .text-white {
+    color: #1a1a1a !important;
+}
+
+/* Light mode navigation icons */
+body[data-mode="light"] nav a {
+    color: rgba(26, 26, 26, 0.7);
+}
+
+body[data-mode="light"] nav a:hover {
+    color: var(--accent-primary);
+}
+
+/* Light mode hover states for all links with hover:text-accent-* classes */
+body[data-mode="light"] a.hover\:text-accent-blue:hover,
+body[data-mode="light"] a.hover\:text-accent-green:hover,
+body[data-mode="light"] a.hover\:text-accent-gold:hover,
+body[data-mode="light"] a.hover\:text-accent-coral:hover {
+    color: var(--accent-primary) !important;
+}
+
+body[data-mode="light"] a.hover\:text-accent-blue:hover svg,
+body[data-mode="light"] a.hover\:text-accent-green:hover svg,
+body[data-mode="light"] a.hover\:text-accent-gold:hover svg,
+body[data-mode="light"] a.hover\:text-accent-coral:hover svg {
+    color: var(--accent-primary) !important;
+}
+
+body[data-mode="light"] a.hover\:text-accent-blue:hover span,
+body[data-mode="light"] a.hover\:text-accent-green:hover span,
+body[data-mode="light"] a.hover\:text-accent-gold:hover span,
+body[data-mode="light"] a.hover\:text-accent-coral:hover span {
+    color: var(--accent-primary) !important;
+}
+
+/* Active navigation link styling */
+nav a.text-accent-blue,
+nav a.text-accent-blue svg,
+nav a.text-accent-blue span {
+    color: var(--accent-primary) !important;
+}
+
+/* Light mode buttons */
+body[data-mode="light"] .tab-button {
+    color: rgba(26, 26, 26, 0.7);
+}
+
+body[data-mode="light"] .tab-button[aria-selected="true"] {
+    color: #fff;
+}
+
+/* Light mode theme menu */
+body[data-mode="light"] #themeMenu {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+body[data-mode="light"] #themeMenu p {
+    color: #1a1a1a;
+}
+
+body[data-mode="light"] .mode-option,
+body[data-mode="light"] .theme-option {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body[data-mode="light"] .mode-option:hover,
+body[data-mode="light"] .theme-option:hover {
+    border-color: var(--accent-primary);
+    background: rgba(0, 0, 0, 0.02);
+}
+
+/* Ensure mode option text is always visible */
+body[data-mode="light"] .mode-option p,
+body[data-mode="light"] .theme-option p {
+    color: #1a1a1a !important;
+}
+
+/* Ensure mode icons are visible in light mode */
+body[data-mode="light"] .mode-option svg {
+    opacity: 1;
+}
+
+/* Make sure dark mode preview stays dark in light mode */
+body[data-mode="light"] .mode-option[data-mode="dark"] > div {
+    background: linear-gradient(to right, #1a1a1a, #000) !important;
+}
+
+body[data-mode="light"] .mode-option[data-mode="dark"] svg {
+    color: #fff !important;
+}
+
+/* Footer links in light mode */
+body[data-mode="light"] .footer-link {
+    color: var(--accent-primary) !important;
+}
+
+/* Active navigation in light mode */
+body[data-mode="light"] nav a.text-accent-blue,
+body[data-mode="light"] nav a.text-accent-blue svg,
+body[data-mode="light"] nav a.text-accent-blue span {
+    color: var(--accent-primary) !important;
+}
+
+/* Section borders in light mode */
+body[data-mode="light"] .border-white\/10 {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Enhanced Glassmorphism Effects */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.glass-card-hover {
+    transition: all var(--transition-base) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.glass-card-hover:active {
+    transform: translateY(-2px);
+}
+
+/* Focus States for Accessibility */
+.glass-card-hover:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 4px;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 4px;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--accent-primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error {
+    border-color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+/* Success States */
+.success {
+    border-color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+}
+
+/* Profile Photo Enhancements */
+.profile-photo {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-photo::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent-primary),
+        var(--accent-secondary),
+        var(--accent-primary)
+    );
+    animation: rotate 8s linear infinite;
+    opacity: 0.5;
+    filter: blur(20px);
+}
+
+.profile-photo img {
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes rotate {
+    to { transform: rotate(360deg); }
+}
+
+/* Timeline Enhancements */
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg,
+        transparent,
+        var(--accent-primary) 10%,
+        var(--accent-primary) 90%,
+        transparent
+    );
+    transform: translateX(-50%);
+}
+
+.timeline-dot {
+    width: 16px;
+    height: 16px;
+    background: var(--accent-primary);
+    border: 3px solid #000;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px var(--accent-primary);
+    position: relative;
+    transition: all var(--transition-base) ease;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.timeline-dot-large {
+    width: 24px;
+    height: 24px;
+    background: var(--accent-primary);
+    border: 4px solid #000;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--accent-primary),
+                0 0 20px var(--accent-primary);
+    position: relative;
+    transition: all var(--transition-base) ease;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.timeline-item {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity var(--transition-slow) ease,
+                transform var(--transition-slow) ease;
+}
+
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Timeline content visibility */
+.timeline-description {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+.timeline-skills {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.3s ease, margin 0.3s ease;
+}
+
+/* Show description on hover */
+.timeline-item:hover .timeline-description,
+.timeline-item:focus-within .timeline-description {
+    max-height: 500px;
+    opacity: 1;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.timeline-item:hover .timeline-skills,
+.timeline-item:focus-within .timeline-skills {
+    max-height: 200px;
+    opacity: 1;
+    margin-top: 1rem;
+}
+
+/* Enhanced card visibility on hover */
+.timeline-item .glass-card {
+    transition: all var(--transition-base) ease;
+}
+
+.timeline-item:hover .glass-card {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.timeline-dot::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    opacity: 0;
+    animation: pulse 2s ease infinite;
+}
+
+.timeline-dot-large::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    opacity: 0;
+    animation: pulse 2s ease infinite;
+}
+
+.timeline-item:hover .timeline-dot::before,
+.timeline-item:hover .timeline-dot-large::before {
+    opacity: 0.5;
+}
+
+.timeline-dot:hover,
+.timeline-dot-large:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px var(--accent-primary);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Skill Bar Styles */
+.skill-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 4px;
+    transform-origin: left;
+    transition: width 1s ease-out;
+    animation: fillBar 1.5s ease-out forwards;
+    animation-play-state: paused;
+}
+
+.skill-bar-fill.animate {
+    animation-play-state: running;
+}
+
+@keyframes fillBar {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* Tab Animation */
+.tab-content {
+    animation: slideIn var(--transition-base) ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scroll Progress Bar */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+    transform-origin: left;
+    z-index: 9999;
+    box-shadow: 0 0 10px var(--accent-primary);
+}
+
+/* Template Banner */
+#templateBanner {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#templateBanner a:hover {
+    transform: scale(1.05);
+}
+
+#templateBanner button:hover {
+    transform: rotate(90deg);
+}
+
+#templateBanner button {
+    transition: transform 0.3s ease;
+}
+
+/* Navigation Enhancements */
+nav a {
+    position: relative;
+}
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    transform: translateX(-50%);
+    transition: width var(--transition-base) ease;
+}
+
+nav a:hover::after,
+nav a:focus::after {
+    width: 100%;
+}
+
+/* Footer Link Styles */
+.footer-link {
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: opacity var(--transition-base) ease;
+}
+
+.footer-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* CTA Button Enhancements */
+.cta-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width var(--transition-slow) ease, height var(--transition-slow) ease;
+}
+
+.cta-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.cta-button span {
+    position: relative;
+    z-index: 1;
+}
+
+/* Portfolio Card Hover Effects */
+.portfolio-card {
+    perspective: 1000px;
+}
+
+.portfolio-card:hover .portfolio-image {
+    transform: rotateY(5deg) rotateX(5deg);
+}
+
+.portfolio-image {
+    transition: transform var(--transition-base) ease;
+    transform-style: preserve-3d;
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+    :root {
+        --font-size-5xl: 2rem;
+        --font-size-4xl: 1.75rem;
+        --font-size-3xl: 1.5rem;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-width: 2px;
+    }
+
+    .glass-card-hover:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+
+/* Dark Mode Enhancement (for browsers that support it) */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000;
+    }
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .glass-card {
+        background: white;
+        border: 1px solid #ccc;
+    }
+
+    nav,
+    .scroll-progress-bar,
+    .cta-button {
+        display: none;
+    }
+
+    .timeline-line {
+        background: #ccc;
+    }
+
+    article {
+        page-break-inside: avoid;
+    }
+}
+
+/* Utility Classes */
+.fadeIn {
+    animation: fadeIn var(--transition-slow) ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slideUp {
+    animation: slideUp var(--transition-base) ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scaleIn {
+    animation: scaleIn var(--transition-base) ease-out;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Selection Styling */
+::selection {
+    background: var(--accent-primary);
+    color: white;
+}
+
+::-moz-selection {
+    background: var(--accent-primary);
+    color: white;
+}
+
+/* Scrollbar Styling (Webkit browsers) */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* Firefox Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-primary) rgba(255, 255, 255, 0.05);
+}
