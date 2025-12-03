@@ -595,6 +595,79 @@ function initTemplateBanner() {
     }
 }
 
+/**
+ * Initialize Back to Top Button
+ * Shows floating button that scrolls page to top
+ * Button follows user while scrolling and matches theme
+ */
+function initBackToTop() {
+    const backToTopButton = document.getElementById('backToTop');
+
+    if (!backToTopButton) {
+        console.warn('Back to top button not found');
+        return;
+    }
+
+    // Smooth scroll to top when clicked
+    backToTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // Optional: Show/hide based on scroll position
+    // Uncomment if you want the button to appear only after scrolling down
+    /*
+    window.addEventListener('scroll', debounce(() => {
+        if (window.scrollY > 300) {
+            backToTopButton.style.display = 'flex';
+        } else {
+            backToTopButton.style.display = 'none';
+        }
+    }, 100));
+    */
+}
+
+/**
+ * Initialize Welcome Message Popup
+ * Shows iMessage-style welcome notification
+ * Auto-dismisses after 7 seconds
+ */
+function initWelcomeMessage() {
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const closeButton = document.getElementById('closeWelcome');
+
+    if (!welcomeMessage) {
+        return;
+    }
+
+    // Function to show the message
+    function showWelcomeMessage() {
+        welcomeMessage.style.transform = 'translateY(0)';
+        welcomeMessage.style.opacity = '1';
+
+        // Auto-dismiss after 7 seconds
+        setTimeout(() => {
+            hideWelcomeMessage();
+        }, 7000);
+    }
+
+    // Function to hide the message
+    function hideWelcomeMessage() {
+        welcomeMessage.style.transform = 'translateY(8rem)';
+        welcomeMessage.style.opacity = '0';
+    }
+
+    // Close button handler
+    if (closeButton) {
+        closeButton.addEventListener('click', hideWelcomeMessage);
+    }
+
+    // Show message after page loads
+    setTimeout(showWelcomeMessage, 500);
+}
+
 // ===================================
 // Initialization
 // ===================================
@@ -613,6 +686,8 @@ function init() {
     initLazyLoading();
     initDownloadTracking();
     initTemplateBanner();
+    initBackToTop();
+    initWelcomeMessage();
 
     // Performance monitoring (development only)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
